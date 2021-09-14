@@ -48,4 +48,12 @@ public class Instructor {
     public void setInstructor_id(Long instructor_id) {
         this.id = instructor_id;
     }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public User getUser() {
+        return user;
+    }
 }

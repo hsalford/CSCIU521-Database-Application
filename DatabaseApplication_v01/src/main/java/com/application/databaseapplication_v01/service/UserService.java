@@ -45,6 +45,11 @@ public class UserService {
 		userRepo.save(user);
 	}
 
+	public User findByUsername(String username) {
+		return userRepo.findByUsername(username);
+
+	}
+
 	private void encodePassword(User user) {
 		String encodedPassword = passwordEncoder.encode(user.getPassword());
 		user.setPassword(encodedPassword);

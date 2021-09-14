@@ -2,12 +2,12 @@ package com.application.databaseapplication_v01.controller;
 
 import com.application.databaseapplication_v01.entity.Instructor;
 import com.application.databaseapplication_v01.entity.Student;
-import com.application.databaseapplication_v01.repository.UserRepository;
 import com.application.databaseapplication_v01.service.InstructorService;
 import com.application.databaseapplication_v01.service.StudentService;
 import com.application.databaseapplication_v01.service.UserService;
 import com.application.databaseapplication_v01.entity.Role;
 import com.application.databaseapplication_v01.entity.User;
+import com.application.databaseapplication_v01.service.ValidationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,7 +23,7 @@ import java.util.List;
 public class AppController {
 
 	@Autowired
-	private UserService service;
+	private UserService userService;
 
 	@Autowired
 	private StudentService studentservice;
@@ -31,7 +31,9 @@ public class AppController {
 	@Autowired
 	private InstructorService instructorService;
 
-	private UserRepository userRepository;
+	@Autowired
+	private ValidationService validationService;
+
 
 	@GetMapping("")
 	public String viewHomePage() {
@@ -47,14 +49,14 @@ public class AppController {
 
 	@PostMapping("/process_register")
 	public String processRegister(User user) {
-		service.registerDefaultUser(user);
+		userService.registerDefaultUser(user);
 
 		return "register_success";
 	}
 
 	@GetMapping("/users")
 	public String listUsers(Model model) {
-		List<User> listUsers = service.listAll();
+		List<User> listUsers = userService.listAll();
 		model.addAttribute("listUsers", listUsers);
 
 		return "users";
@@ -62,8 +64,8 @@ public class AppController {
 
 	@GetMapping("/users/edit/{id}")
 	public String editUser(@PathVariable("id") Long id, Model model) {
-		User user = service.get(id);
-		List<Role> listRoles = service.listRoles();
+		User user = userService.get(id);
+		List<Role> listRoles = userService.listRoles();
 		model.addAttribute("user", user);
 		model.addAttribute("listRoles", listRoles);
 		return "user_form";
@@ -71,40 +73,60 @@ public class AppController {
 
 	@PostMapping("/users/save")
 	public String saveUser(User user) {
-		service.save(user);
+		userService.save(user);
 
 		return "redirect:/users";
 	}
 
 	@GetMapping("/users/register_student")
 	public String registerStudentForm(Model model, @AuthenticationPrincipal UserDetails currentUser) {
-		model.addAttribute("student", new Student());
-		//User user = (User) userRepository.findByUsername(currentUser.getUsername());
-		//model.addAttribute("currentStudent", user);
 
+		User user = (User) userService.findByUsername(currentUser.getUsername());
+		List<Student> students = studentservice.studentList();
+		String err = validationService.checkStudentExist(students, user);
+		if (!err.isEmpty()) {
+			model.addAttribute("errorMessageNewStudent", err);
+			List<User> listUsers = userService.listAll();
+			model.addAttribute("listUsers", listUsers);
+			return "users";
+		}
+
+		model.addAttribute("student", new Student());
 		return "register_student_form";
 	}
 
 	@PostMapping("/users/process_student_register")
-	public String processStudentRegister(Student student) {
+	public String processStudentRegister(Student student, @AuthenticationPrincipal UserDetails currentUser) {
+		User user = (User) userService.findByUsername(currentUser.getUsername());
+		student.setUser(user);
 		studentservice.registerStudent(student);
 
-		return "redirect:/users";
+		return "register_student_success";
 	}
 
 	@GetMapping("/users/register_instructor")
 	public String registerInstructorForm(Model model, @AuthenticationPrincipal UserDetails currentUser) {
+		User user = (User) userService.findByUsername(currentUser.getUsername());
+		List<Instructor> instructors = instructorService.instructorList();
+		String err = validationService.checkInstructorExist(instructors, user);
+		if (!err.isEmpty()) {
+			model.addAttribute("errorMessageNewInstructor", err);
+			List<User> listUsers = userService.listAll();
+			model.addAttribute("listUsers", listUsers);
+			return "users";
+		}
+
 		model.addAttribute("instructor", new Instructor());
-		//User user = (User) userRepository.findByUsername(currentUser.getUsername());
-		//model.addAttribute("currentStudent", user);
 
 		return "register_instructor_form";
 	}
 
 	@PostMapping("/users/process_instructor_register")
-	public String processInstructorRegister(Instructor instructor) {
-		instructorService.registerStudent(instructor);
+	public String processInstructorRegister(Instructor instructor, @AuthenticationPrincipal UserDetails currentUser) {
+		User user = (User) userService.findByUsername(currentUser.getUsername());
+		instructorService.registerInstructor(instructor);
+		instructor.setUser(user);
 
-		return "redirect:/users";
+		return "register_instructor_success";
 	}
 }

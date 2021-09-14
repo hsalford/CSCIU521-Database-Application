@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
 <head>
     <meta charset="ISO-8859-1">
     <title>Register Student</title>
@@ -42,6 +44,8 @@
                     <input type="text" th:field="*{minor}" class="form-control" maxlength="40" />
                 </div>
             </div>
+
+
 
             <div>
                 <button type="submit" class="btn btn-primary">Sign Up</button>

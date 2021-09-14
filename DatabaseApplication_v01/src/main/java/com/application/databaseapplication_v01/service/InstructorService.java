@@ -10,6 +10,8 @@ import com.application.databaseapplication_v01.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class InstructorService {
 
@@ -22,15 +24,18 @@ public class InstructorService {
     @Autowired
     private InstructorRepository instructorRepo;
 
-    public void registerStudent(Instructor user) {
-        Role roleUser = roleRepo.findByName("INSTRUCTOR");
+    public void registerInstructor(Instructor instructor) {
+        //Role roleUser = roleRepo.findByName("INSTRUCTOR");
         //user.addRole(roleUser);
         //encodePassword(user);
-        instructorRepo.save(user);
+        instructorRepo.save(instructor);
     }
 
-    public void save(Instructor user) {
+    public void save(Instructor instructor) {
         //encodePassword(user);
-        instructorRepo.save(user);
+        instructorRepo.save(instructor);
     }
+
+    public List<Instructor> instructorList() { return instructorRepo.findAll(); }
+
 }
