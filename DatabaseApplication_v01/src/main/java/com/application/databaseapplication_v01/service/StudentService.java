@@ -9,6 +9,7 @@ import com.application.databaseapplication_v01.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -27,7 +28,6 @@ public class StudentService {
         studentRepo.save(student);
 
         Role roleUser = roleRepo.findByName("STUDENT");
-
         User user = student.getUser();
         user.addRole(roleUser);
     }
@@ -38,4 +38,12 @@ public class StudentService {
     }
 
     public List<Student> studentList() { return studentRepo.findAll(); }
+
+    public Student get(Long id) {
+        return studentRepo.findById(id).get();
+    }
+
+    public Student validateStudent(String social, String student_id, Date birthday) {
+        return studentRepo.findStudentByBirthdateAndAndStudent_idAndAndSocial(social, student_id, birthday);
+    }
 }

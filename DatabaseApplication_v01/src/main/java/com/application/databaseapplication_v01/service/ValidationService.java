@@ -33,12 +33,5 @@ public class ValidationService {
         return "";
     }
 
-    public String checkInstructorExist(List<Instructor> instructors, User user) {
-        for (Instructor ins: instructors) {
-            if (ins.getUser().getId().equals(user.getId())) {
-                return "Instructor already exits for the currently signed in account.";
-            }
-        }
-        return "";
-    }
+
 }

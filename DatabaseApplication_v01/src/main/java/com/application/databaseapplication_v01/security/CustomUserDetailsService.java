@@ -1,6 +1,8 @@
 package com.application.databaseapplication_v01.security;
 
+import com.application.databaseapplication_v01.entity.Student;
 import com.application.databaseapplication_v01.entity.User;
+import com.application.databaseapplication_v01.repository.StudentRepository;
 import com.application.databaseapplication_v01.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,5 +21,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 		}
 		return new CustomUserDetails(user);
 	}
+
+
 
 }

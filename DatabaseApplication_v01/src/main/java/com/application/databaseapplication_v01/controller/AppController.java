@@ -43,14 +43,15 @@ public class AppController {
 	@GetMapping("/register")
 	public String showRegistrationForm(Model model) {
 		model.addAttribute("user", new User());
-
+		model.addAttribute("student", new Student());
 		return "signup_form";
 	}
 
 	@PostMapping("/process_register")
-	public String processRegister(User user) {
+	public String processRegister(User user, Student student) {
 		userService.registerDefaultUser(user);
-
+		student.setUser(user);
+		studentservice.registerStudent(student);
 		return "register_success";
 	}
 
@@ -58,7 +59,10 @@ public class AppController {
 	public String listUsers(Model model) {
 		List<User> listUsers = userService.listAll();
 		model.addAttribute("listUsers", listUsers);
-
+		List<Student> listStudents = studentservice.studentList();
+		model.addAttribute("studentList", listStudents);
+		List<Instructor> instructorList = instructorService.instructorList();
+		model.addAttribute("instructorList", instructorList);
 		return "users";
 	}
 
@@ -78,55 +82,21 @@ public class AppController {
 		return "redirect:/users";
 	}
 
-	@GetMapping("/users/register_student")
-	public String registerStudentForm(Model model, @AuthenticationPrincipal UserDetails currentUser) {
+	@GetMapping("/users/edit/student/{id}")
+	public String editStudent(@PathVariable("id") Long id, Model model) {
+		Student student = studentservice.get(id);
+		model.addAttribute("student", student);
 
-		User user = (User) userService.findByUsername(currentUser.getUsername());
-		List<Student> students = studentservice.studentList();
-		String err = validationService.checkStudentExist(students, user);
-		if (!err.isEmpty()) {
-			model.addAttribute("errorMessageNewStudent", err);
-			List<User> listUsers = userService.listAll();
-			model.addAttribute("listUsers", listUsers);
-			return "users";
-		}
-
-		model.addAttribute("student", new Student());
-		return "register_student_form";
+		return "edit_student_form";
 	}
 
-	@PostMapping("/users/process_student_register")
-	public String processStudentRegister(Student student, @AuthenticationPrincipal UserDetails currentUser) {
-		User user = (User) userService.findByUsername(currentUser.getUsername());
-		student.setUser(user);
-		studentservice.registerStudent(student);
+	@PostMapping("/users/save/student")
+	public String saveStudent(Student student) {
+		studentservice.save(student);
 
-		return "register_student_success";
+		return "redirect:/users";
 	}
 
-	@GetMapping("/users/register_instructor")
-	public String registerInstructorForm(Model model, @AuthenticationPrincipal UserDetails currentUser) {
-		User user = (User) userService.findByUsername(currentUser.getUsername());
-		List<Instructor> instructors = instructorService.instructorList();
-		String err = validationService.checkInstructorExist(instructors, user);
-		if (!err.isEmpty()) {
-			model.addAttribute("errorMessageNewInstructor", err);
-			List<User> listUsers = userService.listAll();
-			model.addAttribute("listUsers", listUsers);
-			return "users";
-		}
 
-		model.addAttribute("instructor", new Instructor());
 
-		return "register_instructor_form";
-	}
-
-	@PostMapping("/users/process_instructor_register")
-	public String processInstructorRegister(Instructor instructor, @AuthenticationPrincipal UserDetails currentUser) {
-		User user = (User) userService.findByUsername(currentUser.getUsername());
-		instructorService.registerInstructor(instructor);
-		instructor.setUser(user);
-
-		return "register_instructor_success";
-	}
 }

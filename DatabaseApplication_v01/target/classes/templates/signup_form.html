@@ -12,47 +12,88 @@
 		<div>
 			<h1>User Registration - Sign Up</h1>
 		</div>
-		<form th:action="@{/process_register}" th:object="${user}" 
+		<form th:action="@{/process_register}"
 			method="post" style="max-width: 600px; margin: 0 auto;">
 		<div class="m-3">
-			<div class="form-group row">
-				<label class="col-4 col-form-label">E-mail: </label>
-				<div class="col-8">
-					<input type="email" th:field="*{email}" class="form-control" required />
-				</div>
-			</div>
 
 			<div class="form-group row">
 				<label class="col-4 col-form-label">Username: </label>
 				<div class="col-8">
-					<input type="text" th:field="*{username}" class="form-control" required />
+					<input type="text" th:object="${user}" th:field="*{username}" class="form-control" required />
 				</div>
 			</div>
 			
 			<div class="form-group row">
 				<label class="col-4 col-form-label">Password: </label>
 				<div class="col-8">
-					<input type="password" th:field="*{password}" class="form-control" 
+					<input type="password" th:object="${user}" th:field="*{password}" class="form-control"
 							required minlength="6" maxlength="10"/>
 				</div>
 			</div>
-			
+
 			<div class="form-group row">
-				<label class="col-4 col-form-label">First Name: </label>
+				<label class="col-4 col-form-label">University Email: </label>
 				<div class="col-8">
-					<input type="text" th:field="*{firstName}" class="form-control" 
-							required minlength="2" maxlength="20"/>
+					<input type="text" th:object="${student}" th:field="*{email}" class="form-control" required />
 				</div>
 			</div>
-			
+
 			<div class="form-group row">
-				<label class="col-4 col-form-label">Last Name: </label>
+				<label class="col-4 col-form-label">Student ID: </label>
 				<div class="col-8">
-					<input type="text" th:field="*{lastName}" class="form-control" 
-							required minlength="2" maxlength="20" />
+					<input type="text" th:object="${student}" th:field="*{student_id}" class="form-control" required />
 				</div>
 			</div>
-			
+
+			<div class="form-group row">
+				<label class="col-4 col-form-label">Social Security Number: </label>
+				<div class="col-8">
+					<input type="text" th:object="${student}" th:field="*{social}" class="form-control" required />
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<label class="col-4 col-form-label">Firstname: </label>
+				<div class="col-8">
+					<input type="text" th:object="${student}" th:field="*{firstName}" class="form-control" required />
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<label class="col-4 col-form-label">Lastname: </label>
+				<div class="col-8">
+					<input type="text" th:object="${student}" th:field="*{lastName}" class="form-control" required />
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<label class="col-4 col-form-label">Grade Level: </label>
+				<div class="col-8">
+					<input type="text" th:object="${student}" th:field="*{grade_level}" class="form-control" required />
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<label class="col-4 col-form-label">Birthdate: </label>
+				<div class="col-8">
+					<input type="date" th:object="${student}" th:field="*{birthdate}" class="form-control" required />
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<label class="col-4 col-form-label">Major: </label>
+				<div class="col-8">
+					<input type="text" th:object="${student}" th:field="*{major}" class="form-control" maxlength="40" />
+				</div>
+			</div>
+
+			<div class="form-group row">
+				<label class="col-4 col-form-label">Minor: </label>
+				<div class="col-8">
+					<input type="text" th:object="${student}" th:field="*{minor}" class="form-control" maxlength="40" />
+				</div>
+			</div>
+
 			<div>
 				<button type="submit" class="btn btn-primary">Sign Up</button> 
 			</div>

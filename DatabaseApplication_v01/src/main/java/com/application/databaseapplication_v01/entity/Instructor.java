@@ -3,6 +3,7 @@ package com.application.databaseapplication_v01.entity;
 import com.application.databaseapplication_v01.entity.User;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "instructors")
@@ -13,15 +14,23 @@ public class Instructor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true, length = 45)
+    private String email;
+
+    @Column(name = "first_name", nullable = false, length = 20)
+    private String firstName;
+
+    @Column(name = "last_name", nullable = false, length = 20)
+    private String lastName;
+
     @Column(nullable = false, length = 150)
     private String department;
 
     @Column(nullable = true, length = 50)
     private String office;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user;
+    @OneToMany(mappedBy = "instructor")
+    private Set<CourseInstructor> courseInstructors;
 
     public Instructor() {}
 
@@ -49,11 +58,43 @@ public class Instructor {
         this.id = instructor_id;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setCourseInstructors(Set<CourseInstructor> courseInstructors) {
+        this.courseInstructors = courseInstructors;
     }
 
-    public User getUser() {
-        return user;
+    public Set<CourseInstructor> getCourseInstructors() {
+        return courseInstructors;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 }

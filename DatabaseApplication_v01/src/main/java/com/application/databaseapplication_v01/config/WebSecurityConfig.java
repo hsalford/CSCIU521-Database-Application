@@ -14,6 +14,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+	private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+
+	public WebSecurityConfig(CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler) {
+		this.customAuthenticationSuccessHandler = customAuthenticationSuccessHandler;
+	}
+
 	@Bean
 	public UserDetailsService userDetailsService() {
 		return new CustomUserDetailsService();
@@ -42,11 +49,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
 				.antMatchers("/users/**").authenticated()
-				.anyRequest().permitAll()
+				.antMatchers("/students/**").hasRole("STUDENT")
+				//.anyRequest().permitAll()
 				.and()
 				.formLogin()
 				.usernameParameter("username")
-				.defaultSuccessUrl("/users")
+				//.defaultSuccessUrl("/users")
+				.successHandler(customAuthenticationSuccessHandler)
 				.permitAll()
 				.and()
 				.logout().logoutSuccessUrl("/").permitAll();
